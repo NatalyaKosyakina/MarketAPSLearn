@@ -48,6 +48,22 @@ namespace Market.repo
             }
         }
 
+        public bool DeleteProduct(int id)
+        {
+            using (var context = new MarketContext())
+            {
+                var product = context.Products.FirstOrDefault(x => x.Id == id);
+                if (product == null)
+                {
+                    return false;
+                }
+                context.Products.Remove(product);
+                context.SaveChanges();
+                _cache.Remove("products");
+                return true;
+            }
+        }
+
         public IEnumerable<CategoryModel> GetGroups()
         {
             if (_cache.TryGetValue("categories", out List<CategoryModel> groups))
@@ -75,5 +91,23 @@ namespace Market.repo
                 return list;
             }
         }
+
+        public bool UpdatePrice(int id, int price)
+        {
+            using (var context = new MarketContext())
+            {
+                var product = context.Products.FirstOrDefault(x => x.Id == id);
+                if (product == null)
+                {
+                    return false;
+                }
+                product.Price = price;
+                context.SaveChanges();
+                _cache.Remove("products");
+                return true;
+            }
+        }
+
+
     }
 }

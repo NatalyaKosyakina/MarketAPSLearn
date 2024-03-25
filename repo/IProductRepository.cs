@@ -10,5 +10,9 @@ namespace Market.repo
 
         public int AddProduct(ProductModel product);
         public IEnumerable<ProductModel> GetProducts();
+
+        public bool UpdatePrice(int id, int price);
+        public bool DeleteProduct(int id);
+
     }
 }

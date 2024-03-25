@@ -19,7 +19,7 @@ namespace Market.Controllers
             _repository = repository;
         }
         // GET: api/<MarketController>
-        [HttpGet("getProducts")]
+        [HttpGet(template:"getProducts")]
         public ActionResult<IEnumerable<Product>> GetProducts()
         {
             var products = _repository.GetProducts();
@@ -27,14 +27,14 @@ namespace Market.Controllers
         }
 
         // POST api/<MarketController>
-        [HttpPost("addProduct")]
+        [HttpPost(template: "addProduct")]
         public IActionResult AddProduct(ProductModel product)
         {
             var result = _repository.AddProduct(product);
             return Ok(result);
         }
 
-        [HttpGet("getGroups")]
+        [HttpGet(template: "getGroups")]
         public ActionResult<IEnumerable<Product>> GetGroups()
         {
             var groups = _repository.GetGroups();
@@ -42,7 +42,7 @@ namespace Market.Controllers
         }
 
         // POST api/<MarketController>
-        [HttpPost("addGroup")]
+        [HttpPost(template: "addGroup")]
         public IActionResult AddGroup(CategoryModel group)
         {
             var result = _repository.AddGroup(group);
@@ -50,16 +50,30 @@ namespace Market.Controllers
         }
 
 
-        //// PUT api/<MarketController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // PUT api/<MarketController>/5
+        [HttpPut(template: "UpdatePrice {id}")]
+        public IActionResult UpdatePrice(int id, int price)
+        {
+            if (_repository.UpdatePrice(id, price))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
 
-        //// DELETE api/<MarketController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        // DELETE api/<MarketController>/5
+        [HttpDelete(template: "{id}")]
+        public IActionResult Delete(int id)
+        {
+            if (_repository.DeleteProduct(id))
+            {
+                return Ok();
+            }
+            else { return BadRequest(); }
+        }
+
     }
 }
