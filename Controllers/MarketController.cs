@@ -3,6 +3,7 @@ using Market.Models.DTO;
 using Market.repo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using System.Text;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -75,5 +76,31 @@ namespace Market.Controllers
             else { return BadRequest(); }
         }
 
+        private string GetCSV(IEnumerable<ProductModel> list)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in list)
+            {
+                sb.AppendLine($"{item.Id};{item.Name};{item.Description}\n");
+            }
+            return sb.ToString();
+        }
+
+        [HttpGet(template:"GetProductsCSV")]
+        public IActionResult GetProductsCSV()
+        {
+            IEnumerable<ProductModel>? res = _repository.GetProducts();
+            if (res == null)
+            {
+                return BadRequest();
+            }
+            return Ok(GetCSV(res));
+        }
+
+        [HttpGet(template: "GetCacheStatistic")]
+        public IActionResult GetCacheStatistic()
+        {
+            return Ok(_repository.GetCacheStatistic());
+        }
     }
 }

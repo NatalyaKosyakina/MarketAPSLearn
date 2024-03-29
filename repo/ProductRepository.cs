@@ -2,6 +2,7 @@
 using Market.Models;
 using Market.Models.DTO;
 using Microsoft.Extensions.Caching.Memory;
+using NuGet.Protocol;
 
 namespace Market.repo
 {
@@ -108,6 +109,10 @@ namespace Market.repo
             }
         }
 
-
+        public string GetCacheStatistic()
+        {
+            var memory = _cache.GetCurrentStatistics();
+            return memory.ToJson();
+        }
     }
 }

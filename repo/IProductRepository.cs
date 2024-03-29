@@ -13,6 +13,6 @@ namespace Market.repo
 
         public bool UpdatePrice(int id, int price);
         public bool DeleteProduct(int id);
-
+        string GetCacheStatistic();
     }
 }

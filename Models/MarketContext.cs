@@ -8,13 +8,16 @@ namespace Market.Models
         public DbSet<Storage> Storages { get; set; }
         public DbSet<Category> Categories { get; set; }
         //public DbSet<ProductStorage> ProductStorages { get; set; }
+        private string _connectionString;
 
         public MarketContext(DbContextOptions<MarketContext> dbc) : base(dbc) { }
         public MarketContext() { }
+        public MarketContext(string connectionString) {  _connectionString = connectionString; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseLazyLoadingProxies().UseNpgsql("Host=localhost;Username=postgres;Password=example;Database=MarketL1");
+            optionsBuilder.UseNpgsql(_connectionString);
+            //optionsBuilder.UseLazyLoadingProxies().UseNpgsql("Host=localhost;Username=postgres;Password=example;Database=MarketL1");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
