@@ -3,6 +3,7 @@ using Market.Models.DTO;
 using Market.repo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using NuGet.Protocol.Core.Types;
 using System.Text;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -102,5 +103,6 @@ namespace Market.Controllers
         {
             return Ok(_repository.GetCacheStatistic());
         }
+
     }
 }

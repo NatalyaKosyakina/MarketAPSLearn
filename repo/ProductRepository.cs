@@ -10,22 +10,24 @@ namespace Market.repo
     {
         private readonly IMapper _mapper;
         private readonly IMemoryCache _cache;
-        public ProductRepository(IMapper mapper, IMemoryCache cache)
+        private MarketContext _marketContext;
+        public ProductRepository(IMapper mapper, IMemoryCache cache, MarketContext marketContext)
         {
             _mapper = mapper;
             _cache = cache;
+            _marketContext = marketContext;
         }
         public int AddGroup(CategoryModel group)
         {
-            using (var context = new MarketContext())
+            using (_marketContext)
             {
-                var entityGroup = context.Categories.FirstOrDefault(x =>
+                var entityGroup = _marketContext.Categories.FirstOrDefault(x =>
                 x.Name.ToLower().Equals(group.Name.ToLower()));
                 if (entityGroup == null)
                 {
                     entityGroup = _mapper.Map<Category>(group);
-                    context.Categories.Add(entityGroup);
-                    context.SaveChanges();
+                    _marketContext.Categories.Add(entityGroup);
+                    _marketContext.SaveChanges();
                     _cache.Remove("categories");
                 }
                 return entityGroup.Id;
@@ -34,15 +36,15 @@ namespace Market.repo
 
         public int AddProduct(ProductModel product)
         {
-            using (var context = new MarketContext())
+            using (_marketContext)
             {
-                var entityProduct = context.Products.FirstOrDefault(x =>
+                var entityProduct = _marketContext.Products.FirstOrDefault(x =>
                 x.Name.ToLower().Equals(product.Name.ToLower()));
                 if (entityProduct == null)
                 {
                     entityProduct = _mapper.Map<Product>(product);
-                    context.Products.Add(entityProduct);
-                    context.SaveChanges();
+                    _marketContext.Products.Add(entityProduct);
+                    _marketContext.SaveChanges();
                     _cache.Remove("products");
                 }
                 return entityProduct.Id;
@@ -51,15 +53,15 @@ namespace Market.repo
 
         public bool DeleteProduct(int id)
         {
-            using (var context = new MarketContext())
+            using (_marketContext)
             {
-                var product = context.Products.FirstOrDefault(x => x.Id == id);
+                var product = _marketContext.Products.FirstOrDefault(x => x.Id == id);
                 if (product == null)
                 {
                     return false;
                 }
-                context.Products.Remove(product);
-                context.SaveChanges();
+                _marketContext.Products.Remove(product);
+                _marketContext.SaveChanges();
                 _cache.Remove("products");
                 return true;
             }
@@ -71,9 +73,9 @@ namespace Market.repo
             {
                 return groups;
             }
-            using (var context = new MarketContext())
+            using (_marketContext)
             {
-                var list = context.Categories.Select(x => _mapper.Map<CategoryModel>(x)).ToList();
+                var list = _marketContext.Categories.Select(x => _mapper.Map<CategoryModel>(x)).ToList();
                 _cache.Set("categories", list, TimeSpan.FromMinutes(30));
                 return list;
             }
@@ -85,9 +87,9 @@ namespace Market.repo
             {
                 return models;
             }
-            using (var context = new MarketContext())
+            using (_marketContext)
             {
-                var list = context.Products.Select(x => _mapper.Map<ProductModel>(x)).ToList();
+                var list = _marketContext.Products.Select(x => _mapper.Map<ProductModel>(x)).ToList();
                 _cache.Set("products", list, TimeSpan.FromMinutes(30));
                 return list;
             }
@@ -95,15 +97,15 @@ namespace Market.repo
 
         public bool UpdatePrice(int id, int price)
         {
-            using (var context = new MarketContext())
+            using (_marketContext)
             {
-                var product = context.Products.FirstOrDefault(x => x.Id == id);
+                var product = _marketContext.Products.FirstOrDefault(x => x.Id == id);
                 if (product == null)
                 {
                     return false;
                 }
                 product.Price = price;
-                context.SaveChanges();
+                _marketContext.SaveChanges();
                 _cache.Remove("products");
                 return true;
             }
