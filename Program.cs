@@ -32,6 +32,7 @@ namespace Market
                 cb.RegisterType<ProductRepository>().As<IProductRepository>();
                 cb.Register(c => new MarketContext(cfg.GetConnectionString("db"))).InstancePerDependency();
             });
+
             builder.Services.AddSingleton<IProductRepository, ProductRepository>();
             builder.Services.AddMemoryCache(op => op.TrackStatistics = true);
 
@@ -49,9 +50,10 @@ namespace Market
                 app.UseSwaggerUI();
             }
 
+
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             var staticFilePath = Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles");
             Directory.CreateDirectory(staticFilePath);
